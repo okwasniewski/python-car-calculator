@@ -76,16 +76,16 @@ class aCar(ABC):
 
 
 class Car(aCar):
-    def __init__(self, NM, HP, weight, image, name, mark, year, max):
-    self.__NM = NM
-    self.__HP = HP
-    self.__weight = weight
-    self.__image = 'filename.jpg'
-    self.__sound = 'filename.mp3'
-    self.__name = name
-    self.__mark = mark
-    self.__year = year
-    self.max = max
+    def __init__(self, NM, HP, weight, image, name, mark, year, max, sound):
+        self.__NM = NM
+        self.__HP = HP
+        self.__weight = weight
+        self.__image = image
+        self.__sound = sound
+        self.__name = name
+        self.__mark = mark
+        self.__year = year
+        self.__max = max
 
     def quarter_mile(self):
         et = float(6.290*(self.__weight/self.__HP)**(1/3))  # czas
@@ -110,7 +110,12 @@ class Car(aCar):
         f.close()
 
     def PlaySound(self):
-        playsound('filename.mp3')
+        playsound(self.__sound)
 
     def top_speed(self):
         distance = float(0.25*1.6)  # TO DO
+
+
+ob1 = Car(500, 500, 500, "../static/rs7.jpg", "rs7",
+          "audi", 2017, 295, "../static/rs7.mp3")
+ob1.PlaySound()
