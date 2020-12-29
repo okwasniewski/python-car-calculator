@@ -1,47 +1,136 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QKeySequence, QPalette, QColor
+from PyQt5.QtGui import QPalette, QColor, QPixmap
 from PyQt5.QtCore import Qt
+from PIL.ImageQt import ImageQt
+from PIL import Image
+
+# ../static/car1.png
+
+
+class ChooseCar(QWidget):
+    def __init__(self):
+        self.__currentTab = 0
+        self.mainWidget = QWidget()
+        self.mainWidget.setStyleSheet(
+            """QWidget { background-color: #1F1F1F;}""")
+        layout = QGridLayout()
+
+        layout.setAlignment(Qt.AlignHCenter)
+
+        choose_car = QLabel("Pick your car")
+        choose_car.setStyleSheet("QLabel { font-size: 60px; }")
+        pic = QLabel(str("Rs7"))
+
+        pic.setPixmap(QPixmap("../static/car1.png").scaledToWidth(350))
+        pic.setStyleSheet(
+            ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
+
+        pic1 = QLabel(str("Rs5"))
+        pic1.setPixmap(QPixmap("../static/car1.png").scaledToWidth(350))
+        pic1.setStyleSheet(
+            ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
+
+        pic2 = QLabel(str("Rs5"))
+        pic2.setPixmap(QPixmap("../static/car1.png").scaledToWidth(350))
+        pic2.setStyleSheet(
+            ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
+        button = QPushButton("Pick this car")
+        button1 = QPushButton("Pick this car")
+        button2 = QPushButton("Pick this car")
+
+        button.clicked.connect(lambda: self.changeScene(0))
+        button1.clicked.connect(lambda: self.changeScene(1))
+        button2.clicked.connect(lambda: self.changeScene(2))
+
+        layout.addWidget(choose_car, 0, 2, alignment=Qt.AlignHCenter)
+        layout.addWidget(pic, 1, 1)
+        layout.addWidget(pic1, 1, 2)
+        layout.addWidget(pic2, 1, 3)
+        layout.addWidget(button, 2, 1)
+        layout.addWidget(button1, 2, 2)
+        layout.addWidget(button2, 2, 3)
+
+        self.mainWidget.setLayout(layout)
+
+    @property
+    def currentTab(self):
+        return self.__currentTab
+
+    def changeScene(self, index):
+        self.__currentTab = index
+
+    def draw(self):
+        return self.mainWidget
 
 
 class Page1(QWidget):
 
-    def __init__(self, label, label1):
-        self.networkTab = QWidget()
-        self.networkTab.setStyleSheet(
+    def __init__(self, carName, carHP, carNM, imageSrc):
+        self.__carName = carName
+        self.__carHP = carHP
+        self.__carNM = carNM
+        self.__imageSrc = imageSrc
+        self.menu = QStackedLayout()
+        # Setting up Widgets
+        self.mainWidget = QWidget()
+        self.mainWidget.setStyleSheet(
             """QWidget { background-color: #1F1F1F;}""")
         layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignHCenter)
         slider = QSlider(Qt.Horizontal)
         slider.setMinimum(10)
         slider.setMaximum(1000)
         slider.setValue(250)
         slider.setTickPosition(QSlider.TicksAbove)
         slider.setTickInterval(5)
+        pic = QLabel(str(self.__carName))
+        pic.setPixmap(QPixmap(str(self.__imageSrc)))
+        car_name_label = QLabel(str(self.__carName))
+        car_name_label.setStyleSheet(
+            "QLabel { font-size: 50px; font-weight: bold; }")
+        car_hp_text = "Horsepower: " + str(self.__carHP)
+        car_hp_label = QLabel(car_hp_text)
+        car_hp_label.setStyleSheet(
+            "QLabel { font-size: 30px; font-weight: bold; }")
+        car_nm_text = "Torque: " + str(self.__carNM)
+        car_nm_label = QLabel(car_nm_text)
+        car_nm_label.setStyleSheet(
+            "QLabel { font-size: 30px; font-weight: bold; }")
+
         l1 = QLabel(str(slider.value()))
         l1.setAlignment(Qt.AlignCenter)
         slider.valueChanged.connect(l1.setNum)
-        layout.addWidget(l1)
+
+        # Adding Widgets to layout
+        layout.addWidget(pic, alignment=Qt.AlignHCenter)
+        layout.addWidget(car_name_label)
+        layout.addWidget(car_hp_label)
+        layout.addWidget(car_nm_label)
         layout.addWidget(slider)
-        layout.addWidget(QCheckBox(label))
-        layout.addWidget(QCheckBox(label1))
-        self.networkTab.setLayout(layout)
+
+        # Setting Layout
+        self.mainWidget.setLayout(layout)
 
     def draw(self):
-        return self.networkTab
+        return self.mainWidget
 
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
+        # Setting window attributes
         self.setWindowTitle("Car Calculator")
         self.setFixedSize(1280, 720)
-
         layout = QGridLayout()
-        b1 = Page1("Strona 1", "Choose car")
-        b2 = Page1("Strona 2", "Top Speed")
-        b3 = Page1("Strona 3", "1/4 Mile")
-        b4 = Page1("Strona 4", "Exhaust Sound")
-        label2 = QLabel("Widget in Tab 2.")
+
+        # Setting up pages
+        b1 = Page1("Audi RS7", "550", "900", "../static/car1.png")
+        b2 = Page1("Audi RS2", "550", "900", "../static/car1.png")
+        b3 = Page1("Audi RS3", "550", "900", "../static/car1.png")
+        b4 = Page1("Audi RS5", "550", "900", "../static/car1.png")
+        b5 = ChooseCar()
+        # Custom Styling
         tabwidget = QTabWidget()
         tabwidget.setStyleSheet("""
             QTabWidget {
@@ -68,11 +157,17 @@ class MainWindow(QMainWindow):
             }
             """)
 
-        tabwidget.addTab(b1.draw(), "CHOOSE CAR")
+        # Adding Tabs
+        tabwidget.addTab(b5.draw(), "CHOOSE CAR")
         tabwidget.addTab(b2.draw(), "TOP SPEED")
         tabwidget.addTab(b3.draw(), "1/4 MILE")
         tabwidget.addTab(b4.draw(), "EXHAUST SOUND")
         layout.addWidget(tabwidget, 0, 0)
+
+        # tabwidget.setCurrentIndex(0)
+        # tabwidget.setTabEnabled(1, False)
+        # tabwidget.setTabEnabled(2, False)
+        # tabwidget.setTabEnabled(3, False)
 
         widget = QWidget()
 
@@ -102,5 +197,4 @@ if __name__ == '__main__':
     palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
     palette.setColor(QPalette.HighlightedText, Qt.black)
     app.setPalette(palette)
-
     app.exec_()
