@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import importlib
 from playsound import playsound
+from PIL import Image
 
 
 class aCar(ABC):
@@ -70,6 +71,10 @@ class aCar(ABC):
     def PlaySound(self):
         pass
 
+    @abstractmethod
+    def Picture(self):
+        pass
+
     def print(self):
         print('Model: ', self.__mark(), self.__name(), '\n Year: ', self.__year(
         ), '\n Horse Power: ', self.__HP(), '\n NM: ', self.__NM(), '\n Weight ', self.__weight())
@@ -112,10 +117,15 @@ class Car(aCar):
     def PlaySound(self):
         playsound(self.__sound)
 
+    def Picture(self):
+        img = Image.open(self.__image)
+        img.show()
+
     def top_speed(self):
         distance = float(0.25*1.6)  # TO DO
 
 
 ob1 = Car(500, 500, 500, "../static/rs7.jpg", "rs7",
           "audi", 2017, 295, "../static/rs7.mp3")
-ob1.PlaySound()
+# ob1.PlaySound()
+ob1.Picture()
