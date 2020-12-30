@@ -9,7 +9,20 @@ from PIL import Image
 
 class ChooseCar(QWidget):
     def __init__(self):
-        self.__currentTab = 0
+        self.stack = QStackedWidget()
+        self.secondaryWidget = QWidget()
+        self.secondaryWidget.setStyleSheet(
+            """QWidget { background-color: #1F1F1F;}""")
+        self.thirdWidget = QWidget()
+        self.thirdWidget.setStyleSheet(
+            """QWidget { background-color: #1F1F1F;}""")
+        self.fourthWidget = QWidget()
+        self.fourthWidget.setStyleSheet(
+            """QWidget { background-color: #1F1F1F;}""")
+        layout1 = QGridLayout()
+        layout2 = QGridLayout()
+        layout3 = QGridLayout()
+
         self.mainWidget = QWidget()
         self.mainWidget.setStyleSheet(
             """QWidget { background-color: #1F1F1F;}""")
@@ -21,46 +34,76 @@ class ChooseCar(QWidget):
         choose_car.setStyleSheet("QLabel { font-size: 60px; }")
         pic = QLabel(str("Rs7"))
 
-        pic.setPixmap(QPixmap("../static/car1.png").scaledToWidth(350))
+        pic.setPixmap(QPixmap("../static/m5.png").scaledToWidth(350))
         pic.setStyleSheet(
             ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
 
         pic1 = QLabel(str("Rs5"))
-        pic1.setPixmap(QPixmap("../static/car1.png").scaledToWidth(350))
+        pic1.setPixmap(QPixmap("../static/rs7.png").scaledToWidth(350))
         pic1.setStyleSheet(
             ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
 
         pic2 = QLabel(str("Rs5"))
-        pic2.setPixmap(QPixmap("../static/car1.png").scaledToWidth(350))
+        pic2.setPixmap(QPixmap("../static/w222.png").scaledToWidth(350))
         pic2.setStyleSheet(
             ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
-        button = QPushButton("Pick this car")
-        button1 = QPushButton("Pick this car")
-        button2 = QPushButton("Pick this car")
 
-        button.clicked.connect(lambda: self.changeScene(0))
-        button1.clicked.connect(lambda: self.changeScene(1))
-        button2.clicked.connect(lambda: self.changeScene(2))
+        # Setting up layout0
+        choose_button = QPushButton("Pick this car")
+        choose_button1 = QPushButton("Pick this car")
+        choose_button2 = QPushButton("Pick this car")
+
+        choose_button.clicked.connect(lambda: self.changeScene(1))
+        choose_button1.clicked.connect(lambda: self.changeScene(2))
+        choose_button2.clicked.connect(lambda: self.changeScene(3))
 
         layout.addWidget(choose_car, 0, 2, alignment=Qt.AlignHCenter)
         layout.addWidget(pic, 1, 1)
         layout.addWidget(pic1, 1, 2)
         layout.addWidget(pic2, 1, 3)
-        layout.addWidget(button, 2, 1)
-        layout.addWidget(button1, 2, 2)
-        layout.addWidget(button2, 2, 3)
+        layout.addWidget(choose_button, 2, 1)
+        layout.addWidget(choose_button1, 2, 2)
+        layout.addWidget(choose_button2, 2, 3)
 
+        # Setting up Layout 1
+        go_back_button = QPushButton("Go back")
+        go_back_button.clicked.connect(lambda: self.changeScene(0))
+
+        go_back_button1 = QPushButton("Go back")
+        go_back_button1.clicked.connect(lambda: self.changeScene(0))
+
+        go_back_button2 = QPushButton("Go back")
+        go_back_button2.clicked.connect(lambda: self.changeScene(0))
+
+        p1 = Page1("BMW M5", "550", "1200", "../static/m5.png")
+        p2 = Page1("Audi RS7", "550", "1200", "../static/rs7.png")
+        p3 = Page1("Mercedes w222", "550", "1200", "../static/w222.png")
+        layout1.addWidget(p1.draw())
+        layout1.addWidget(go_back_button, 1, 0)
+
+        layout2.addWidget(p2.draw())
+        layout2.addWidget(go_back_button1, 1, 0)
+
+        layout3.addWidget(p3.draw())
+        layout3.addWidget(go_back_button2, 1, 0)
+        # Setting layouts
+        self.fourthWidget.setLayout(layout3)
+        self.thirdWidget.setLayout(layout2)
+        self.secondaryWidget.setLayout(layout1)
         self.mainWidget.setLayout(layout)
 
-    @property
-    def currentTab(self):
-        return self.__currentTab
+        # Adding widgets to stack
+        self.stack.addWidget(self.mainWidget)
+        self.stack.addWidget(self.secondaryWidget)
+        self.stack.addWidget(self.thirdWidget)
+        self.stack.addWidget(self.fourthWidget)
 
     def changeScene(self, index):
-        self.__currentTab = index
+        print(index)
+        self.stack.setCurrentIndex(index)
 
     def draw(self):
-        return self.mainWidget
+        return self.stack
 
 
 class Page1(QWidget):
@@ -125,10 +168,9 @@ class MainWindow(QMainWindow):
         layout = QGridLayout()
 
         # Setting up pages
-        b1 = Page1("Audi RS7", "550", "900", "../static/car1.png")
-        b2 = Page1("Audi RS2", "550", "900", "../static/car1.png")
-        b3 = Page1("Audi RS3", "550", "900", "../static/car1.png")
-        b4 = Page1("Audi RS5", "550", "900", "../static/car1.png")
+        b2 = Page1("BMW M5", "550", "900", "../static/m5.png")
+        b3 = Page1("Audi RS7", "550", "900", "../static/rs7.png")
+        b4 = Page1("Mercedes w222", "550", "900", "../static/w222.png")
         b5 = ChooseCar()
         # Custom Styling
         tabwidget = QTabWidget()
@@ -163,11 +205,6 @@ class MainWindow(QMainWindow):
         tabwidget.addTab(b3.draw(), "1/4 MILE")
         tabwidget.addTab(b4.draw(), "EXHAUST SOUND")
         layout.addWidget(tabwidget, 0, 0)
-
-        # tabwidget.setCurrentIndex(0)
-        # tabwidget.setTabEnabled(1, False)
-        # tabwidget.setTabEnabled(2, False)
-        # tabwidget.setTabEnabled(3, False)
 
         widget = QWidget()
 
