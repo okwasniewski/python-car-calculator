@@ -73,8 +73,8 @@ class Car(aCar):
         f = open('result.txt', 'w+')
         f.write("Czas 1/4 mili: ")
         f.write(str(et))
-        f.write("\nPredkosc[mile]:")
-        f.write(str(mph))
+        # f.write("\nPredkosc[mile]:")
+        # f.write(str(mph))
         f.write("\nPredkosc[hm/h]:")
         f.write(str(result))
         f.close()
@@ -88,7 +88,6 @@ class Car(aCar):
         pygame.init()
         pygame.mixer.music.load(self.__sound)
         pygame.mixer.music.play()
-        time.sleep(10)
 
     def StopSound(self):
         pygame.mixer.music.stop()
@@ -97,7 +96,7 @@ class Car(aCar):
         distance = float(0.25*1.6)  # TO DO
 
     def show(self):
-        return "Marka: %s Model: %s Rocznik: %d HP: %d NM: %d Weight: %d " % (self.mark(), self.__name(), self.__year(), self.__HP(), self.__NM(), self.__weight())
+        return "Marka: %s Model: %s Rocznik: %d HP: %d NM: %d Weight: %d ".format(self.mark(), self.__name(), self.__year(), self.__HP(), self.__NM(), self.__weight())
 
 
 BMW = Car(750, 625, 2000, "../static/m5.jpg", "M5",

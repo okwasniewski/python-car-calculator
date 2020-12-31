@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
+from Car import Car
 
 
 class ExhaustSoundPage(QWidget):
@@ -37,17 +38,20 @@ class ExhaustSoundPage(QWidget):
         car_nm_label.setStyleSheet(
             "QLabel { font-size: 30px; font-weight: bold; }")
 
-        l1 = QLabel(str(slider.value()))
-        l1.setAlignment(Qt.AlignCenter)
-        slider.valueChanged.connect(l1.setNum)
+        start_button = QPushButton("Play sound")
+        stop_button = QPushButton("Stop sound")
+        start_button.clicked.connect(lambda: BMW.PlaySound())
+        stop_button.clicked.connect(lambda: BMW.StopSound())
 
+        BMW = Car(750, 625, 2000, "../static/m5.jpg", "M5",
+                  "BMW", 2017, 295, "../static/m5.mp3")
         # Adding Widgets to layout
         layout.addWidget(pic, alignment=Qt.AlignHCenter)
         layout.addWidget(car_name_label)
         layout.addWidget(car_hp_label)
         layout.addWidget(car_nm_label)
-        layout.addWidget(slider)
-
+        layout.addWidget(start_button)
+        layout.addWidget(stop_button)
         # Setting Layout
         self.mainWidget.setLayout(layout)
 
