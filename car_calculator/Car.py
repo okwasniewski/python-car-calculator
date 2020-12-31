@@ -62,25 +62,26 @@ class Car(aCar):
         return self.__max
 
     def quarter_mile(self):
-        et = float(6.290*(self.__weight/self.__HP)**(1/3))  # czas
-        mph = float(224*(self.__HP/self.__weight)**1/3)  # w milach
+        et = float(6.290*(self.__weight*2.20462262/self.__HP)**(1/3))  # czas
+        mph = float(224*(self.__HP*0.745699872/self.__weight)
+                    ** (1/3))  # w milach
         result = float(mph*1.6)  # w km/h
 
-        print('1/4 Mile Elapsed Time: ', et)
-        print('1/4 Mile Trap Speed: ', result)
+        print('1/4 Mile Elapsed Time[s]:  ', et)
+        print('1/4 Mile Trap Speed[km/h]: ', result)
 
-        f = open('result.txt', 'r+')
-        f.write('result.txt')
+        f = open('result.txt', 'w+')
+        f.write("Czas 1/4 mili: ")
+        f.write(str(et))
+        f.write("\nPredkosc[mile]:")
+        f.write(str(mph))
+        f.write("\nPredkosc[hm/h]:")
+        f.write(str(result))
         f.close()
 
     def Import(self):
         f = open('filename.txt', 'r+')
         f.writelines('filename.txt')
-        f.close()
-
-    def Export(self):
-        f = open('result.txt', 'r+')
-        f.write('result.txt')
         f.close()
 
     def PlaySound(self):
@@ -97,3 +98,15 @@ class Car(aCar):
 
     def show(self):
         return "Marka: %s Model: %s Rocznik: %d HP: %d NM: %d Weight: %d " % (self.mark(), self.__name(), self.__year(), self.__HP(), self.__NM(), self.__weight())
+
+
+BMW = Car(750, 625, 2000, "../static/m5.jpg", "M5",
+          "BMW", 2017, 295, "../static/m5.mp3")
+
+Audi = Car(500, 500, 500, "../static/rs7.jpg", "RS7",
+           "Audi", 2017, 295, "../static/rs7.mp3")
+
+Mercedes = Car(500, 500, 500, "../static/w222.jpg", "W222",
+               "Mercedes", 2017, 295, "../static/w222.mp3")
+
+BMW.quarter_mile()

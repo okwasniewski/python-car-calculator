@@ -54,10 +54,6 @@ class aCar(ABC):
         pass
 
     @abstractmethod
-    def Export(self):
-        pass
-
-    @abstractmethod
     def PlaySound(self):
         pass
 
