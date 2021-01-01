@@ -34,7 +34,7 @@ class Car(aCar):
     def HP(self):
         return self.__HP
 
-    @NM.setter
+    @HP.setter
     def HP(self, y):
         if 1 < y < 1000:
             self._HP_setter(y)
@@ -49,6 +49,10 @@ class Car(aCar):
     def name(self):
         return self.__name
 
+    @name.setter
+    def name(self, value):
+        self.__name = str(value)
+
     @property
     def mark(self):
         return self.__mark
@@ -60,6 +64,22 @@ class Car(aCar):
     @property
     def max(self):
         return self.__max
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, value):
+        self.__image = str(value)
+
+    @property
+    def sound(self):
+        return self.__sound
+
+    @sound.setter
+    def sound(self, value):
+        self.__sound = value
 
     def quarter_mile(self):
         et = float(6.290*(self.__weight*2.20462262/self.__HP)**(1/3))  # czas
