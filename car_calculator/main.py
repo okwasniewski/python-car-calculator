@@ -8,7 +8,8 @@ from Car import Car
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.choosenCar = None
+        self.choosenCar = Car(500, 426, 2000, "../static/m5.png", "M5",
+                              "BMW", 2017, 295, "../static/m5.mp3")
 
         # Setting window attributes
         self.setWindowTitle("Car Calculator")
@@ -25,13 +26,18 @@ class MainWindow(QMainWindow):
         self.carOverviewNameLabel = QLabel()
         self.carOverviewHPLabel = QLabel()
         self.carOverviewNMLabel = QLabel()
-
+        self.carOverviewSlider = QSlider(Qt.Horizontal)
+        self.carOverviewNMSlider = QSlider(Qt.Horizontal)
         # Exhaust Sound
         self.exhaustImage = QLabel()
         self.exhaustNameLabel = QLabel()
         self.exhaustHPLabel = QLabel()
         self.exhaustNMLabel = QLabel()
 
+        # Quarter Mile
+        self.le = QLabel()
+        self.quarterMilePic = QLabel()
+        self.quarterMileResult = QLabel()
         # Initialization
         self.initializeUI()
         self.show()
@@ -97,6 +103,18 @@ class MainWindow(QMainWindow):
         self.carOverviewMainWidget.setStyleSheet(
             """QWidget { background-color: #1F1F1F;}""")
         self.carOverviewLayout.setAlignment(Qt.AlignHCenter)
+        self.carOverviewSlider.valueChanged.connect(self.HandleHPSlider)
+        self.carOverviewSlider.setMinimum(10)
+        self.carOverviewSlider.setMaximum(999)
+        self.carOverviewSlider.setValue(550)
+        self.carOverviewSlider.setTickPosition(QSlider.TicksAbove)
+        self.carOverviewSlider.setTickInterval(5)
+        self.carOverviewNMSlider.setMinimum(100)
+        self.carOverviewNMSlider.setMaximum(999)
+        self.carOverviewNMSlider.setValue(550)
+        self.carOverviewNMSlider.setTickPosition(QSlider.TicksAbove)
+        self.carOverviewNMSlider.setTickInterval(5)
+        self.carOverviewNMSlider.valueChanged.connect(self.HandleNMSlider)
 
         # Adding Widgets to layout
         self.carOverviewLayout.addWidget(
@@ -104,6 +122,8 @@ class MainWindow(QMainWindow):
         self.carOverviewLayout.addWidget(self.carOverviewNameLabel)
         self.carOverviewLayout.addWidget(self.carOverviewHPLabel)
         self.carOverviewLayout.addWidget(self.carOverviewNMLabel)
+        self.carOverviewLayout.addWidget(self.carOverviewSlider)
+        self.carOverviewLayout.addWidget(self.carOverviewNMSlider)
         # layout.addWidget(slider)
 
         # Setting Layout
@@ -164,13 +184,31 @@ class MainWindow(QMainWindow):
         mainWidget.setStyleSheet(
             """QWidget { background-color: #1F1F1F;}""")
         layout = QGridLayout()
-
+        self.quarterMileResult.setStyleSheet(
+            "QLabel { font-size: 25px; font-weight: semi-bold; }")
         layout.setAlignment(Qt.AlignHCenter)
-
-        choose_car = QLabel("Quarter mile")
-        layout.addWidget(choose_car, 0, 2, alignment=Qt.AlignHCenter)
+        btn = QPushButton("Calculate result")
+        btn1 = QPushButton("Export result")
+        btn.clicked.connect(lambda: self.handleCalculateQuarterMile())
+        btn1.clicked.connect(lambda: self.savefile())
+        layout.addWidget(self.quarterMilePic)
+        layout.addWidget(self.quarterMileResult)
+        layout.addWidget(btn)
+        layout.addWidget(btn1)
         mainWidget.setLayout(layout)
         return mainWidget
+
+    def getfile(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file',
+                                            'c:\\', "Image files (*.jpg *.gif)")
+        self.le.setPixmap(QPixmap(fname[0]))
+
+    def savefile(self):
+        fname = QFileDialog.getSaveFileName(
+            self, 'Save file', 'c:\\', "Text files (*.txt)")
+        print(fname[0])
+        if (fname[0] != ""):
+            self.choosenCar.export_quarter_mile(fname[0])
 
     def exhaustSoundPage(self):
         # Setting up Widgets
@@ -196,8 +234,25 @@ class MainWindow(QMainWindow):
         mainWidget.setLayout(layout)
         return mainWidget
 
+    def handleCalculateQuarterMile(self):
+        result, et = self.choosenCar.quarter_mile()
+        quarterMileText = "1/4 Mile Elapsed Time[s]: {} \n 1/4 Mile Trap Speed[km/h]: {}".format(
+            et, result)
+        self.quarterMileResult.setText(quarterMileText)
+
+    def HandleNMSlider(self):
+        car_nm_text = "Torque: " + str(self.carOverviewNMSlider.value())
+        self.carOverviewNMLabel.setText(car_nm_text)
+        self.choosenCar.NM = self.carOverviewNMSlider.value()
+        self.exhaustNMLabel.setText(car_nm_text)
+
+    def HandleHPSlider(self):
+        car_hp_text = "Horsepower: " + str(self.carOverviewSlider.value())
+        self.carOverviewHPLabel.setText(car_hp_text)
+        self.choosenCar.HP = self.carOverviewSlider.value()
+        self.exhaustHPLabel.setText(car_hp_text)
+
     def handleChooseCar(self, index):
-        print(index)
         # Unlocking tabs after user input
         self.tabwidget.setTabEnabled(1, True)
         self.tabwidget.setTabEnabled(2, True)
@@ -216,7 +271,7 @@ class MainWindow(QMainWindow):
         # Car Overview
         car_hp_text = "Horsepower: " + str(self.choosenCar.HP)
         car_nm_text = "Torque: " + str(self.choosenCar.NM)
-
+        self.carOverviewSlider.setValue(self.choosenCar.HP)
         self.carOverviewPic.setPixmap(QPixmap(str(self.choosenCar.image)))
         self.carOverviewNameLabel.setText(str(self.choosenCar.name))
         self.carOverviewHPLabel.setText(car_hp_text)
@@ -228,6 +283,9 @@ class MainWindow(QMainWindow):
         self.exhaustHPLabel.setText(car_hp_text)
         self.exhaustNMLabel.setText(car_nm_text)
         self.tabwidget.setCurrentIndex(1)
+
+        # Quarter Mile
+        self.quarterMilePic.setPixmap(QPixmap(str(self.choosenCar.image)))
 
     def getPalette(self):
         palette = QPalette()
