@@ -113,39 +113,35 @@ class Car(aCar):
     def show(self):
         return "Marka: %s Model: %s Rocznik: %d HP: %d NM: %d Weight: %d ".format(self.mark(), self.__name(), self.__year(), self.__HP(), self.__NM(), self.__weight())
 
-    def hp_plot(firsthp,secondhp,thirdhp):
+    def hp_plot(firsthp, secondhp, thirdhp):
         x = np.linspace(0, 300, 1)
-        point11 = [0,6700]
-        point22 = [0,6000]
-        point33 = [0,5600] 
+        point11 = [0, 6700]
+        point22 = [0, 6000]
+        point33 = [0, 5600]
 
-        point1 = [0, ((63.025*firsthp)/5600)*100]  
+        point1 = [0, ((63.025*firsthp)/5600)*100]
         point2 = [0, ((63.025*secondhp)/6700)*100]
         point3 = [0, ((63.025*thirdhp)/6000)*100]
 
-
-        plt.plot(point11, point1) #Audi
-        plt.plot(point22, point2) #BMW
-        plt.plot(point33, point3) #m
+        plt.plot(point11, point1)  # Audi
+        plt.plot(point22, point2)  # BMW
+        plt.plot(point33, point3)  # m
 
         plt.title('Performance of all stock cars')
         plt.grid(True)
 
         plt.xlabel('Engine speed (RPM)')
-        plt.xticks([1000,2000,3000,4000,5000,6000,7000])
+        plt.xticks([1000, 2000, 3000, 4000, 5000, 6000, 7000])
 
         plt.ylabel('Horsepower (HP)')
-        plt.yticks([0, 100,200,300,400,500,600,700,800,900,999])
-
+        plt.yticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 999])
 
         red = mpatches.Patch(color='red', label='BMW M5')
         green = mpatches.Patch(color='green', label='Mercedes W222')
         blue = mpatches.Patch(color='blue', label='Audi RS7')
         plt.legend(handles=[red, green, blue], loc='upper center',
-                bbox_to_anchor=(0.5, 1.00), shadow=True, ncol=1)
+                   bbox_to_anchor=(0.5, 1.00), shadow=True, ncol=1)
         plt.savefig('Performance.pdf', dpi=300, quality=80,
-                    optimize=True, progressive=True) 
-            
-        plt.show()
+                    optimize=True, progressive=True)
 
-    hp_plot(605,625,585)
+        plt.show()
