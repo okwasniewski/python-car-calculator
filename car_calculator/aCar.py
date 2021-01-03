@@ -50,6 +50,14 @@ class aCar(ABC):
         pass
 
     @abstractmethod
+    def export_quarter_mile(self, fileName):
+        pass
+
+     @abstractmethod
+    def quarter_mile(self):
+        pass
+
+     @abstractmethod
     def Import(self):
         pass
 
@@ -57,5 +65,14 @@ class aCar(ABC):
     def PlaySound(self):
         pass
 
+    @abstractmethod
+    def StopSound(self):
+        pass
+
+    @abstractmethod
     def show(self):
+        pass
+
+    @abstractmethod
+    def hp_plot(self):
         pass
