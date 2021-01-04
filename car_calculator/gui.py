@@ -1,8 +1,7 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QFont, QPalette, QColor, QPixmap
+from PyQt5.QtGui import QPalette, QColor, QPixmap
 from PyQt5.QtCore import Qt
-from PIL.ImageQt import ImageQt
-from Car import Car
+from car_calculator.Car import Car
 
 
 class MainWindow(QMainWindow):
@@ -38,6 +37,7 @@ class MainWindow(QMainWindow):
         self.le = QLabel()
         self.quarterMilePic = QLabel()
         self.quarterMileResult = QLabel()
+
         # Initialization
         self.initializeUI()
         self.show()
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
             background: gray;
             color: white;
             padding: 10px;
-            width: 293px;
+            width: 230,7px;
             height: 30px;
             font-size: 18px;
             font-weight: bold;
@@ -81,8 +81,9 @@ class MainWindow(QMainWindow):
         # Adding Tabs
         self.tabwidget.addTab(self.chooseCar(), "CHOOSE CAR")
         self.tabwidget.addTab(self.carOverview(), "CAR OVERVIEW")
+        self.tabwidget.addTab(self.quarterMile(), "QUARTER MILE")
+        self.tabwidget.addTab(self.stockHP(), "PLOT")
         self.tabwidget.addTab(self.exhaustSoundPage(), "EXHAUST SOUND")
-        self.tabwidget.addTab(self.quarterMile(), "QUARTERT MILE")
         # Locking up tabs before user input
 
         self.tabwidget.setTabEnabled(1, False)
@@ -144,17 +145,17 @@ class MainWindow(QMainWindow):
             """QLabel { font-size: 60px; font-weight: semi-bold; }""")
         pic = QLabel(str("Rs7"))
 
-        pic.setPixmap(QPixmap("../static/m5.png").scaledToWidth(350))
+        pic.setPixmap(QPixmap("static/m5.png").scaledToWidth(350))
         pic.setStyleSheet(
             ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
 
-        pic1 = QLabel(str("Rs5"))
-        pic1.setPixmap(QPixmap("../static/rs7.png").scaledToWidth(350))
+        pic1 = QLabel(str("Rs7"))
+        pic1.setPixmap(QPixmap("static/rs7.png").scaledToWidth(350))
         pic1.setStyleSheet(
             ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
 
-        pic2 = QLabel(str("Rs5"))
-        pic2.setPixmap(QPixmap("../static/w222.png").scaledToWidth(350))
+        pic2 = QLabel(str("w222"))
+        pic2.setPixmap(QPixmap("static/w222.png").scaledToWidth(350))
         pic2.setStyleSheet(
             ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
 
@@ -179,13 +180,63 @@ class MainWindow(QMainWindow):
 
         return mainWidget
 
+    def stockHP(self):
+        stockHPMainWidget = QWidget()
+        stockHPMainWidget.setStyleSheet(
+            """QWidget { background-color: #1F1F1F;}""")
+        layout = QGridLayout()
+
+        mainLabel = QLabel("Stock car HP & NM")
+        mainLabel.setStyleSheet(
+            """QLabel { font-size: 40px; font-weight: semi-bold; text-align: center; }""")
+        pic = QLabel(str("Rs7"))
+
+        pic.setPixmap(QPixmap("static/m5.png").scaledToWidth(350))
+        pic.setStyleSheet(
+            ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
+
+        pic1 = QLabel(str("Rs5"))
+        pic1.setPixmap(QPixmap("static/rs7.png").scaledToWidth(350))
+        pic1.setStyleSheet(
+            ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
+
+        pic2 = QLabel(str("Rs5"))
+        pic2.setPixmap(QPixmap("static/w222.png").scaledToWidth(350))
+        pic2.setStyleSheet(
+            ":hover{margin: 15px; background-color: #808080; border-radius: 8px; }")
+
+        btn = QPushButton("Show Plot")
+        btn1 = QPushButton("Export Plot")
+        btn.clicked.connect(lambda: self.handleShowPlot())
+        btn1.clicked.connect(lambda: self.handleExportPlot())
+
+        layout.addWidget(mainLabel, 0, 2, alignment=Qt.AlignHCenter)
+        layout.addWidget(pic, 1, 1)
+        layout.addWidget(pic1, 1, 2)
+        layout.addWidget(pic2, 1, 3)
+        layout.addWidget(btn, 2, 1)
+        layout.addWidget(btn1, 2, 3)
+        stockHPMainWidget.setLayout(layout)
+
+        return stockHPMainWidget
+
+    def handleShowPlot(self):
+        self.choosenCar.hp_plot(625, 605, 612)
+
+    def handleExportPlot(self):
+        fname = QFileDialog.getSaveFileName(
+            self, 'Save file', 'c:\\', "PDF-Files (*.pdf)")
+        if (fname[0] != ""):
+            self.choosenCar.hp_plot(625, 605, 612, fname[0])
+
     def quarterMile(self):
         mainWidget = QWidget()
         mainWidget.setStyleSheet(
             """QWidget { background-color: #1F1F1F;}""")
         layout = QGridLayout()
         self.quarterMileResult.setStyleSheet(
-            "QLabel { font-size: 25px; font-weight: semi-bold; }")
+            "QLabel { font-size: 27px; font-weight: semi-bold; }")
+        self.quarterMileResult.setAlignment(Qt.AlignLeading)
         layout.setAlignment(Qt.AlignHCenter)
         btn = QPushButton("Calculate result")
         btn1 = QPushButton("Export result")
@@ -236,7 +287,7 @@ class MainWindow(QMainWindow):
 
     def handleCalculateQuarterMile(self):
         result, et = self.choosenCar.quarter_mile()
-        quarterMileText = "1/4 Mile Elapsed Time[s]: {} \n 1/4 Mile Trap Speed[km/h]: {}".format(
+        quarterMileText = "1/4 Mile Elapsed Time[s]: {} \n1/4 Mile Trap Speed[km/h]: {}".format(
             et, result)
         self.quarterMileResult.setText(quarterMileText)
 
@@ -260,14 +311,14 @@ class MainWindow(QMainWindow):
         self.tabwidget.setTabEnabled(4, True)
         # Creating object for tests
         if (index == 0):
-            self.choosenCar = Car(500, 426, 2000, "../static/m5.png", "M5",
-                                  "BMW", 2017, 295, "../static/m5.mp3")
+            self.choosenCar = Car(750, 625, 1900, "static/m5.png", "M5",
+                                  "BMW", 2020, 295, "static/m5.mp3")
         elif (index == 1):
-            self.choosenCar = Car(900, 635, 2000, "../static/rs7.png", "RS7",
-                                  "Audi", 2017, 295, "../static/rs7.mp3")
+            self.choosenCar = Car(700, 605, 1920, "static/rs7.png", "RS7",
+                                  "Audi", 2017, 295, "static/rs7.mp3")
         elif (index == 2):
-            self.choosenCar = Car(830, 890, 2000, "../static/w222.png", "W222",
-                                  "Mercedes", 2017, 295, "../static/w222.mp3")
+            self.choosenCar = Car(900, 612, 2000, "static/w222.png", "W222",
+                                  "Mercedes", 2018, 295, "static/w222.mp3")
         # Car Overview
         car_hp_text = "Horsepower: " + str(self.choosenCar.HP)
         car_nm_text = "Torque: " + str(self.choosenCar.NM)
@@ -303,13 +354,3 @@ class MainWindow(QMainWindow):
         palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
         palette.setColor(QPalette.HighlightedText, Qt.black)
         return palette
-
-
-if __name__ == '__main__':
-
-    app = QApplication([])
-    window = MainWindow()
-    app.setStyle("Fusion")
-    app.setPalette(window.getPalette())
-    app.setFont(QFont("Montserrat"))
-    app.exec_()
