@@ -25,3 +25,12 @@
 - Calculating & exporting Quarter Mile result
 - Plots for stock cars
 - Playing back exhaust sounds
+
+## Install dependencies
+
+```bash
+    pip install PyQt5
+    pip install matplotlib
+    pip install numpy
+    pip install pygame
+```
