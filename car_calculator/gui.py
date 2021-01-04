@@ -334,7 +334,7 @@ class MainWindow(QMainWindow):
         self.exhaustHPLabel.setText(car_hp_text)
         self.exhaustNMLabel.setText(car_nm_text)
         self.tabwidget.setCurrentIndex(1)
-
+        self.quarterMileResult.setText("")
         # Quarter Mile
         self.quarterMilePic.setPixmap(QPixmap(str(self.choosenCar.image)))
 
